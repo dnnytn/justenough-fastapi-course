@@ -8,6 +8,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ── Font size system ─────────────────────────── */
+html{font-size:16px}
+html[data-fs="sm"]{font-size:14px}
+html[data-fs="lg"]{font-size:18px}
+html[data-fs="xl"]{font-size:20px}
+@media(max-width:640px){
+  html{font-size:18px}
+  html[data-fs="sm"]{font-size:16px}
+  html[data-fs="lg"]{font-size:20px}
+  html[data-fs="xl"]{font-size:22px}
+}
+
 :root {
   --bg: #090d12;
   --surface: #0e1520;
@@ -302,6 +314,7 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
   .ref-table pre{font-size:.78rem}
 }
 </style>
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
 <div class="layout" id="layout">
@@ -316,6 +329,11 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
       </svg>
     </button>
     <span class="toc-wordmark">Just Enough FastAPI</span>
+    <div class="header-tools">
+      <button class="fa-btn" id="fa-down" aria-label="Decrease font size" title="Smaller text" disabled>A−</button>
+      <button class="fa-btn" id="fa-up" aria-label="Increase font size" title="Larger text">A+</button>
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to light theme" title="Toggle theme">☀</button>
+    </div>
   </div>
   <div class="toc-inner" id="toc-inner">
     <ol class="toc-list">
@@ -333,8 +351,6 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
 </nav>
 
 <main class="content" id="main-content">
-
-  <button class="theme-btn" id="theme-btn" aria-label="Switch to light theme" title="Toggle theme">☀</button>
 
   <header class="course-header">
     <div class="course-eyebrow">FastAPI · Infra Edition</div>
@@ -1213,133 +1229,22 @@ app.add_middleware(
     </table></div>
   </section>
 
+  <nav class="slide-nav" aria-label="Slide navigation">
+    <button class="snav-btn" id="snav-prev" aria-label="Previous section" disabled>
+      <span aria-hidden="true">←</span> Prev
+    </button>
+    <div class="snav-progress">
+      <div class="snav-count"><span id="slide-cur" class="cur">1</span> / <span id="slide-total">9</span></div>
+      <div class="snav-dots" id="snav-dots" aria-label="Section navigation dots"></div>
+    </div>
+    <button class="snav-btn" id="snav-next" aria-label="Next section">
+      Next <span aria-hidden="true">→</span>
+    </button>
+  </nav>
+
 </main>
 </div>
 
-<script>
-// ── TOC toggle ──────────────────────────────────────
-const layout = document.getElementById('layout');
-const tocNav = document.getElementById('toc-nav');
-const tocToggle = document.getElementById('toc-toggle');
-
-const isMobile = () => window.innerWidth <= 640;
-
-// Desktop: collapse sidebar column
-function setCollapsed(collapsed) {
-  layout.classList.toggle('toc-collapsed', collapsed);
-  tocToggle.setAttribute('aria-expanded', String(!collapsed));
-  tocToggle.setAttribute('aria-label', collapsed ? 'Expand navigation' : 'Collapse navigation');
-  try { localStorage.setItem('tocCollapsed', collapsed ? '1' : '0'); } catch(e) {}
-}
-
-// Mobile: toggle dropdown
-function setMobileOpen(open) {
-  tocNav.classList.toggle('mobile-open', open);
-  tocToggle.setAttribute('aria-expanded', String(open));
-  tocToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
-}
-
-tocToggle.addEventListener('click', () => {
-  if (isMobile()) {
-    setMobileOpen(!tocNav.classList.contains('mobile-open'));
-  } else {
-    setCollapsed(!layout.classList.contains('toc-collapsed'));
-  }
-});
-
-// Close mobile menu when a link is tapped
-document.querySelectorAll('.toc-list a').forEach(a => {
-  a.addEventListener('click', () => {
-    if (isMobile()) setMobileOpen(false);
-  });
-});
-
-if (!isMobile() && localStorage.getItem('tocCollapsed') === '1') setCollapsed(true);
-
-// ── Theme toggle ─────────────────────────────────────
-const html = document.documentElement;
-const themeBtn = document.getElementById('theme-btn');
-
-function setTheme(t) {
-  html.setAttribute('data-theme', t);
-  themeBtn.textContent = t === 'dark' ? '☀' : '☾';
-  themeBtn.setAttribute('aria-label', `Switch to ${t === 'dark' ? 'light' : 'dark'} theme`);
-  try { localStorage.setItem('theme', t); } catch(e) {}
-}
-
-themeBtn.addEventListener('click', () => {
-  setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-});
-
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme) setTheme(savedTheme);
-
-// ── Copy buttons ─────────────────────────────────────
-document.querySelectorAll('pre').forEach(pre => {
-  const btn = document.createElement('button');
-  btn.className = 'copy-btn';
-  btn.textContent = 'copy';
-  btn.setAttribute('aria-label', 'Copy code');
-  btn.addEventListener('click', () => {
-    const code = pre.querySelector('code');
-    const text = (code || pre).innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = 'copied!';
-      setTimeout(() => { btn.textContent = 'copy'; }, 2000);
-    }).catch(() => {
-      const sel = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(code || pre);
-      sel.removeAllRanges();
-      sel.addRange(range);
-    });
-  });
-  pre.appendChild(btn);
-});
-
-// ── Quiz interactions ─────────────────────────────────
-document.querySelectorAll('.quiz-opt').forEach(btn => {
-  btn.addEventListener('click', function() {
-    if (this.disabled) return;
-    const q = this.closest('.quiz-q');
-    q.querySelectorAll('.quiz-opt').forEach(o => {
-      o.disabled = true;
-      if (o.dataset.correct === 'true') {
-        o.classList.add(o === this ? 'correct' : 'reveal');
-      } else if (o === this) {
-        o.classList.add('wrong');
-      }
-    });
-  });
-});
-
-// ── Section entrance animations ──────────────────────
-const animObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('visible'); animObs.unobserve(e.target); }
-  });
-}, { threshold: 0.04 });
-document.querySelectorAll('.section').forEach(s => animObs.observe(s));
-
-// Course header always visible immediately
-const ch = document.querySelector('.course-header');
-if (ch) { ch.style.opacity='1'; ch.style.transform='none'; }
-
-// ── Active TOC highlight on scroll ───────────────────
-const sections = document.querySelectorAll('.section[id]');
-const tocLinks = document.querySelectorAll('.toc-list a');
-
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      tocLinks.forEach(a => a.classList.remove('active'));
-      const active = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
-      if (active) active.classList.add('active');
-    }
-  });
-}, { rootMargin: '-10% 0px -80% 0px' });
-
-sections.forEach(s => obs.observe(s));
-</script>
+<script src="app.js"></script>
 </body>
 </html>
