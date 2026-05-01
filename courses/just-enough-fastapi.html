@@ -200,9 +200,94 @@ pre{background:var(--code-bg);border:1px solid var(--border);border-radius:var(-
 .ref-table pre{margin:4px 0;padding:8px 10px;font-size:.8rem;border:none;background:var(--code-bg)}
 hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
 
-/* Responsive */
-@media(max-width:900px){.content{padding:36px 28px 80px}.split-2{grid-template-columns:1fr}.di-grid{grid-template-columns:1fr}.di-arrows{display:none}}
-@media(max-width:640px){.layout{grid-template-columns:1fr!important}.toc{position:relative;height:auto;max-height:52px;overflow:hidden;transition:max-height var(--t)}.toc.mobile-open{max-height:400px}.content{padding:24px 16px 60px}.mw-dir{display:none}}
+/* ── Quiz ───────────────────────────────────────── */
+.quiz{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-top:32px}
+.quiz-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:18px}
+.quiz-q{margin-bottom:22px}
+.quiz-q:last-child{margin-bottom:0}
+.q-text{font-size:.95rem;color:var(--text);font-weight:500;margin-bottom:10px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:7px}
+.quiz-opt{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;text-align:left;color:var(--text-muted);font-size:.875rem;font-family:var(--font);cursor:pointer;transition:background var(--t),border-color var(--t),color var(--t);line-height:1.4}
+.quiz-opt:hover:not([disabled]){background:var(--border);color:var(--text)}
+.quiz-opt.correct{background:rgba(74,222,128,.12)!important;border-color:rgba(74,222,128,.45)!important;color:var(--green)!important}
+.quiz-opt.wrong{background:rgba(248,113,113,.12)!important;border-color:rgba(248,113,113,.45)!important;color:var(--red)!important}
+.quiz-opt.reveal{background:rgba(74,222,128,.06)!important;border-color:rgba(74,222,128,.2)!important;color:var(--green)!important;opacity:.7}
+.quiz-opt[disabled]{cursor:default}
+@media(max-width:640px){.quiz{padding:18px 16px}.quiz-opt{font-size:1rem;padding:12px 14px}}
+
+/* ── Responsive ──────────────────────────────────── */
+
+/* Tablet */
+@media(max-width:900px){
+  .content{padding:36px 32px 80px}
+  .split-2{grid-template-columns:1fr}
+  .di-grid{grid-template-columns:1fr}
+  .di-arrows{display:none}
+  .stack-box{width:auto;min-width:140px}
+}
+
+/* Mobile: TOC becomes sticky top bar */
+@media(max-width:640px){
+  .layout{grid-template-columns:1fr!important}
+
+  /* TOC collapses to a top bar, expands as dropdown */
+  .toc{
+    position:sticky;top:0;
+    height:auto;max-height:52px;
+    border-right:none;border-bottom:1px solid var(--border);
+    overflow:hidden;transition:max-height 280ms ease;z-index:50
+  }
+  .toc.mobile-open{max-height:440px;overflow-y:auto}
+  .toc-header{padding:11px 16px}
+  .toc-wordmark{opacity:1!important;font-size:13px}
+  .toc-inner{display:block!important;padding:6px 10px 16px}
+  .toc-list a{padding:11px 12px;font-size:16px}
+  .layout.toc-collapsed .toc-inner{display:block!important}
+
+  /* Theme button: sit inline in content, not fixed */
+  .theme-btn{position:absolute;top:18px;right:16px;z-index:10}
+  .content{position:relative;padding:24px 16px 60px}
+
+  /* Typography: bump everything up */
+  body{font-size:16px}
+  .prose{font-size:1rem;line-height:1.75}
+  .sec-title{font-size:1.4rem}
+  .course-title{font-size:1.9rem}
+  .course-sub{font-size:1rem}
+  .callout{font-size:.95rem}
+  .section{margin-bottom:56px}
+  .course-header{margin-bottom:48px}
+  hr.divider{margin:48px 0}
+
+  /* Diagram text: legible on small screens */
+  .pipe-name{font-size:15px!important}
+  .pipe-desc{font-size:14px!important}
+  .pipe-num{width:32px!important;height:32px!important;font-size:13px!important}
+  .stack-box .box-label{font-size:14px!important}
+  .stack-box .box-sub{font-size:12px!important}
+  .url-tree{font-size:14px;line-height:2}
+  .verb{font-size:12px!important;width:54px!important}
+  .di-dep .dep-name{font-size:14px}
+  .di-dep .dep-note{font-size:12px}
+  .dt-q{font-size:14px}
+  .file-tree{font-size:13px;line-height:1.9}
+  .mw-box .mw-name{font-size:14px}
+  .mw-box .mw-note{font-size:12px}
+
+  /* Diagram layout adjustments */
+  .stack-row{flex-direction:column;align-items:stretch}
+  .stack-row .stack-box{flex:none;width:100%}
+  .url-comment{display:none}
+  .dt-branches{flex-direction:column;gap:6px}
+  .mw-dir{display:none}
+  .diagram{padding:20px 16px}
+
+  /* Reference table: scrollable container */
+  .ref-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:24px 0}
+  .ref-table{margin:0;font-size:.82rem;min-width:480px}
+  .ref-table td:first-child{white-space:normal;min-width:120px}
+  .ref-table pre{font-size:.78rem}
+}
 </style>
 </head>
 <body>
@@ -279,6 +364,38 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
     <div class="callout">
       <strong>Use FastAPI for:</strong> REST APIs, JSON microservices, webhook receivers, AI inference wrappers.<br>
       <strong>Not for:</strong> serving HTML pages (use templates + Jinja2, or just Django), stateful websocket servers at scale, or batch processing jobs — run those as separate processes.
+    </div>
+  </section>
+
+    <div class="quiz">
+      <div class="quiz-label">Check your understanding</div>
+      <div class="quiz-q">
+        <div class="q-text">What server process does FastAPI use to accept HTTP connections?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">gunicorn</button>
+          <button class="quiz-opt">nginx</button>
+          <button class="quiz-opt" data-correct="true">uvicorn</button>
+          <button class="quiz-opt">waitress</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Which of these is NOT a good use case for FastAPI?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">A JSON REST API for a mobile app</button>
+          <button class="quiz-opt">A webhook receiver for third-party events</button>
+          <button class="quiz-opt" data-correct="true">Server-side rendered HTML pages</button>
+          <button class="quiz-opt">An LLM inference wrapper</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">FastAPI's automatically generated API docs are available at...</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">/swagger</button>
+          <button class="quiz-opt" data-correct="true">/docs</button>
+          <button class="quiz-opt">/openapi</button>
+          <button class="quiz-opt">/api</button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -364,6 +481,38 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
     </div>
   </section>
 
+    <div class="quiz">
+      <div class="quiz-label">Check your understanding</div>
+      <div class="quiz-q">
+        <div class="q-text">At which step in the pipeline does Pydantic validate the incoming request body?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Step 2 — middleware</button>
+          <button class="quiz-opt">Step 3 — route matching</button>
+          <button class="quiz-opt" data-correct="true">Step 5 — after dependency resolution</button>
+          <button class="quiz-opt">Step 7 — response serialization</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">What HTTP status does FastAPI return automatically when Pydantic validation fails?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">400 Bad Request</button>
+          <button class="quiz-opt" data-correct="true">422 Unprocessable Entity</button>
+          <button class="quiz-opt">500 Internal Server Error</button>
+          <button class="quiz-opt">403 Forbidden</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">What happens when a dependency raises an HTTPException?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">The handler runs with a None argument instead</button>
+          <button class="quiz-opt">The exception is logged and ignored</button>
+          <button class="quiz-opt" data-correct="true">The chain short-circuits and the handler never runs</button>
+          <button class="quiz-opt">FastAPI retries the request once</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <hr class="divider">
 
   <!-- ─────────────────────────────────── §3 ──── -->
@@ -421,6 +570,38 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
 
     <div class="callout">
       <strong>Route order matters:</strong> FastAPI evaluates routes in the order they're declared. Put <code>/tasks/stats</code> before <code>/tasks/{task_id}</code> or "stats" will be treated as a task_id.
+    </div>
+  </section>
+
+    <div class="quiz">
+      <div class="quiz-label">Check your understanding</div>
+      <div class="quiz-q">
+        <div class="q-text">A client sends PUT /tasks but only GET /tasks is declared. What does FastAPI return?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">404 Not Found</button>
+          <button class="quiz-opt" data-correct="true">405 Method Not Allowed</button>
+          <button class="quiz-opt">422 Unprocessable Entity</button>
+          <button class="quiz-opt">400 Bad Request</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Why should /tasks/stats be declared before /tasks/{task_id}?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Stats routes require higher priority for performance</button>
+          <button class="quiz-opt" data-correct="true">FastAPI matches the first route that fits — "stats" would be captured as task_id otherwise</button>
+          <button class="quiz-opt">Static paths are always matched after dynamic ones</button>
+          <button class="quiz-opt">It doesn't matter — FastAPI resolves ambiguity automatically</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Query parameters in FastAPI are declared as...</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">URL segments with {braces} in the path string</button>
+          <button class="quiz-opt">Items in a separate @app.query() decorator</button>
+          <button class="quiz-opt" data-correct="true">Function arguments with defaults (not present in the path)</button>
+          <button class="quiz-opt">A dict passed to the request object</button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -498,6 +679,38 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
     </div>
   </section>
 
+    <div class="quiz">
+      <div class="quiz-label">Check your understanding</div>
+      <div class="quiz-q">
+        <div class="q-text">Declaring response_model on a route does what?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Makes the route read-only</button>
+          <button class="quiz-opt" data-correct="true">Filters the response to only declared fields — extra fields are stripped</button>
+          <button class="quiz-opt">Converts the response to XML</button>
+          <button class="quiz-opt">Validates that the request body matches the model</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Which model shape handles PATCH requests (partial updates)?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Create model — all required fields</button>
+          <button class="quiz-opt">Read model — full response with server fields</button>
+          <button class="quiz-opt" data-correct="true">Update model — all fields optional</button>
+          <button class="quiz-opt">Base model — shared field definitions</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Your DB row has a password_hash field. You return it from the handler but it's not in response_model. What happens?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">FastAPI raises a 500 because the field is unexpected</button>
+          <button class="quiz-opt">The field is included in the response anyway</button>
+          <button class="quiz-opt" data-correct="true">The field is silently stripped from the JSON response</button>
+          <button class="quiz-opt">A deprecation warning is logged</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <hr class="divider">
 
   <!-- ─────────────────────────────────── §5 ──── -->
@@ -561,6 +774,38 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
     </div>
   </section>
 
+    <div class="quiz">
+      <div class="quiz-label">Check your understanding</div>
+      <div class="quiz-q">
+        <div class="q-text">FastAPI generates a 422 automatically when...</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">You explicitly raise HTTPException(422)</button>
+          <button class="quiz-opt" data-correct="true">Pydantic validation fails on the request body or params</button>
+          <button class="quiz-opt">Your handler returns None</button>
+          <button class="quiz-opt">The database connection fails</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">How do you return a 404 from inside a handler?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">return None</button>
+          <button class="quiz-opt">return {"status": 404}</button>
+          <button class="quiz-opt" data-correct="true">raise HTTPException(status_code=404, detail="...")</button>
+          <button class="quiz-opt">raise ValueError("not found")</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">An unhandled Python exception in a handler produces...</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">422 Unprocessable Entity</button>
+          <button class="quiz-opt">400 Bad Request</button>
+          <button class="quiz-opt">404 Not Found</button>
+          <button class="quiz-opt" data-correct="true">500 Internal Server Error</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <hr class="divider">
 
   <!-- ─────────────────────────────────── §6 ──── -->
@@ -614,6 +859,38 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
 
     <div class="callout">
       <strong>Practical pattern:</strong> put all shared infrastructure (DB session, current user, settings, rate limiter) in a <code>deps.py</code> file. Routes import and declare them via <code>Depends()</code>. Business logic never touches the raw request object.
+    </div>
+  </section>
+
+    <div class="quiz">
+      <div class="quiz-label">Check your understanding</div>
+      <div class="quiz-q">
+        <div class="q-text">A dependency uses yield instead of return. When does its cleanup code run?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Before the handler runs</button>
+          <button class="quiz-opt">Immediately after the handler returns a value</button>
+          <button class="quiz-opt" data-correct="true">After the HTTP response has been sent to the client</button>
+          <button class="quiz-opt">Only when an exception is raised</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">If you declare a dependency on an APIRouter (not a specific route)...</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Only the first route in the router uses it</button>
+          <button class="quiz-opt" data-correct="true">Every route under that router inherits it</button>
+          <button class="quiz-opt">It applies globally to all routes in the app</button>
+          <button class="quiz-opt">It must still be re-declared on each route</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">FastAPI resolves dependency chains in what order?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Alphabetical order of function names</button>
+          <button class="quiz-opt">Declaration order in the function signature</button>
+          <button class="quiz-opt" data-correct="true">Topological order — dependencies before their dependents</button>
+          <button class="quiz-opt">Random order optimized for parallelism</button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -698,6 +975,38 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
     </div>
   </section>
 
+    <div class="quiz">
+      <div class="quiz-label">Check your understanding</div>
+      <div class="quiz-q">
+        <div class="q-text">Which middleware layer runs first on an incoming request?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">The last one added with add_middleware()</button>
+          <button class="quiz-opt" data-correct="true">The first one added — it wraps all subsequent layers</button>
+          <button class="quiz-opt">The CORSMiddleware always runs first regardless of order</button>
+          <button class="quiz-opt">Order doesn't matter — middleware runs concurrently</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">CORS is primarily enforced by...</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">The FastAPI server rejecting cross-origin requests</button>
+          <button class="quiz-opt">The API gateway stripping unauthorized headers</button>
+          <button class="quiz-opt" data-correct="true">The browser blocking cross-origin requests unless the server permits them</button>
+          <button class="quiz-opt">TLS certificates verifying the origin domain</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Setting allow_origins=["*"] in CORSMiddleware means...</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Your API is publicly accessible without authentication</button>
+          <button class="quiz-opt">Server-side auth checks are bypassed</button>
+          <button class="quiz-opt" data-correct="true">Browsers are told they may call the API from any origin — auth still required</button>
+          <button class="quiz-opt">All HTTP methods are allowed on all routes</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <hr class="divider">
 
   <!-- ─────────────────────────────────── §8 ──── -->
@@ -745,6 +1054,38 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
     </div>
   </section>
 
+    <div class="quiz">
+      <div class="quiz-label">Check your understanding</div>
+      <div class="quiz-q">
+        <div class="q-text">What should main.py contain?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">All route handlers and business logic</button>
+          <button class="quiz-opt" data-correct="true">App instance, router registration, and middleware setup — nothing else</button>
+          <button class="quiz-opt">Database models and migration scripts</button>
+          <button class="quiz-opt">Pydantic schemas and validators</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">A function queries the database but never imports from fastapi. Where does it belong?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">routers/ — alongside the route handlers</button>
+          <button class="quiz-opt">models.py — with the Pydantic schemas</button>
+          <button class="quiz-opt">deps.py — as a dependency</button>
+          <button class="quiz-opt" data-correct="true">services/ — business logic with no HTTP awareness</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">The main value of the services layer is...</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Routes load faster because logic is precompiled</button>
+          <button class="quiz-opt" data-correct="true">Business logic can be unit-tested without starting the HTTP server</button>
+          <button class="quiz-opt">It generates API documentation automatically</button>
+          <button class="quiz-opt">It handles CORS and middleware configuration</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <hr class="divider">
 
   <!-- ─────────────────────────────────── §9 ──── -->
@@ -756,7 +1097,7 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:72px 0}
       <p>Patterns to prompt an AI with — or paste directly and edit field names.</p>
     </div>
 
-    <table class="ref-table">
+    <div class="ref-table-wrap"><table class="ref-table">
       <thead>
         <tr><th>Concept</th><th>FastAPI mechanism</th></tr>
       </thead>
@@ -856,7 +1197,7 @@ app.add_middleware(
     <span class="kw">return</span> {<span class="st">"status"</span>: <span class="st">"created"</span>}</code></pre></td>
         </tr>
       </tbody>
-    </table>
+    </table></div>
   </section>
 
 </main>
@@ -865,8 +1206,12 @@ app.add_middleware(
 <script>
 // ── TOC toggle ──────────────────────────────────────
 const layout = document.getElementById('layout');
+const tocNav = document.getElementById('toc-nav');
 const tocToggle = document.getElementById('toc-toggle');
 
+const isMobile = () => window.innerWidth <= 640;
+
+// Desktop: collapse sidebar column
 function setCollapsed(collapsed) {
   layout.classList.toggle('toc-collapsed', collapsed);
   tocToggle.setAttribute('aria-expanded', String(!collapsed));
@@ -874,11 +1219,29 @@ function setCollapsed(collapsed) {
   try { localStorage.setItem('tocCollapsed', collapsed ? '1' : '0'); } catch(e) {}
 }
 
+// Mobile: toggle dropdown
+function setMobileOpen(open) {
+  tocNav.classList.toggle('mobile-open', open);
+  tocToggle.setAttribute('aria-expanded', String(open));
+  tocToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+}
+
 tocToggle.addEventListener('click', () => {
-  setCollapsed(!layout.classList.contains('toc-collapsed'));
+  if (isMobile()) {
+    setMobileOpen(!tocNav.classList.contains('mobile-open'));
+  } else {
+    setCollapsed(!layout.classList.contains('toc-collapsed'));
+  }
 });
 
-if (localStorage.getItem('tocCollapsed') === '1') setCollapsed(true);
+// Close mobile menu when a link is tapped
+document.querySelectorAll('.toc-list a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (isMobile()) setMobileOpen(false);
+  });
+});
+
+if (!isMobile() && localStorage.getItem('tocCollapsed') === '1') setCollapsed(true);
 
 // ── Theme toggle ─────────────────────────────────────
 const html = document.documentElement;
@@ -919,6 +1282,22 @@ document.querySelectorAll('pre').forEach(pre => {
     });
   });
   pre.appendChild(btn);
+});
+
+// ── Quiz interactions ─────────────────────────────────
+document.querySelectorAll('.quiz-opt').forEach(btn => {
+  btn.addEventListener('click', function() {
+    if (this.disabled) return;
+    const q = this.closest('.quiz-q');
+    q.querySelectorAll('.quiz-opt').forEach(o => {
+      o.disabled = true;
+      if (o.dataset.correct === 'true') {
+        o.classList.add(o === this ? 'correct' : 'reveal');
+      } else if (o === this) {
+        o.classList.add('wrong');
+      }
+    });
+  });
 });
 
 // ── Active TOC highlight on scroll ───────────────────
