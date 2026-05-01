@@ -1,0 +1,6 @@
+{
+  "outputDirectory": "courses",
+  "rewrites": [
+    { "source": "/", "destination": "/just-enough-fastapi.html" }
+  ]
+}
